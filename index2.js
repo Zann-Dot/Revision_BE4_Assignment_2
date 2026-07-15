@@ -60,6 +60,19 @@ app.get("/recipes/author/:author", async (req, res) => {
     }
 });
 
+app.get("/recipes/difficulty/:difficulty", async (req, res) => {
+    const difficulty = req.params.difficulty;
+    try {
+        const recipe = await Recipes.find({ difficulty });
+        if (!recipe) {
+            return res.status(404).json({ message: "Recipe not found" });
+        }
+        res.status(200).json(recipe);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
