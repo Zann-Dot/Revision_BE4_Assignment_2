@@ -1,6 +1,7 @@
 import { connectDB } from "./db/db.connect";
 import express from "express";
 import cors from "cors"
+import { Recipes } from "./models/recipes.models";
 connectDB()
 const app = express();
 app.use(cors());
@@ -28,6 +29,32 @@ app.post("/recipes", async (req, res) => {
         }
 
         res.status(201).json({ message: "Recipe added successfully", recipe });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.get("/recipes/title/:title", async (req, res) => {
+    const title = req.params.title;
+    try {
+        const recipe = await Recipes.findOne({ title });
+        if (!recipe) {
+            return res.status(404).json({ message: "Recipe not found" });
+        }
+        res.status(200).json(recipe);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.get("/recipes/author/:author", async (req, res) => {
+    const author = req.params.author;
+    try {
+        const recipe = await Recipes.find({ author });
+        if (!recipe) {
+            return res.status(404).json({ message: "Recipe not found" });
+        }
+        res.status(200).json(recipe);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
