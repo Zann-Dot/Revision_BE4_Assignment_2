@@ -84,6 +84,28 @@ app.post("/recipes/:id", async (req, res) => {
     res.status(201).json({ message: "Recipe updated successfully", recipe });
 });
 
+app.post("/recipes/update/:title", async (req, res) => {
+    const title = req.params.title;
+    const { prepTime, cookTime } = req.body;
+
+    if (!prepTime || !cookTime) {
+        return res
+            .status(400)
+            .json({ message: "PrepTime and CookTime are required" });
+    }
+    const recipe = await Recipes.findOneAndUpdate(
+        { title },
+        { prepTime, cookTime },
+        { new: true },
+    );
+
+    if (!recipe) {
+        return res.status(404).json({ message: "Recipe not found" });
+    }
+
+    res.status(201).json({ message: "Recipe updated successfully", recipe });
+});
+
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
