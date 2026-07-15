@@ -19,6 +19,20 @@ app.get("/recipes", async (req, res) => {
     }
 });
 
+app.post("/recipes", async (req, res) => {
+    try {
+        const recipe = await Recipes.create(req.body);
+
+        if (!recipe) {
+            return res.status(400).json({ message: "Failed to add recipe" });
+        }
+
+        res.status(201).json({ message: "Recipe added successfully", recipe });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
